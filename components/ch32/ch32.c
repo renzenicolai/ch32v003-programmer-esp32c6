@@ -113,9 +113,13 @@ bool ch32_reset_microprocessor_and_run() {
     }
 
     ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x00000001); // Clear the core reset request
+    vTaskDelay(pdMS_TO_TICKS(10));
     ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x10000001); // Clear the core reset status signal
+    vTaskDelay(pdMS_TO_TICKS(10));
+    ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x00000001); // Clear the core reset status signal clear request
+    vTaskDelay(pdMS_TO_TICKS(10));
 
-    timeout = 5;
+    timeout = 100;
     while (1) {
         uint32_t value;
         ch32_sdi_read(CH32_REG_DEBUG_DMSTATUS, &value);
@@ -138,7 +142,7 @@ bool ch32_reset_microprocessor_and_halt() {
     ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x80000001); // Initiate a halt request
     ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x80000003); // Initiate a core reset request
 
-    uint8_t timeout = 5;
+    uint8_t timeout = 100;
     while (1) {
         uint32_t value;
         ch32_sdi_read(CH32_REG_DEBUG_DMSTATUS, &value);
@@ -154,7 +158,12 @@ bool ch32_reset_microprocessor_and_halt() {
     }
 
     ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x80000001); // Clear the core reset request
+    vTaskDelay(pdMS_TO_TICKS(10));
     ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x90000001); // Clear the core reset status signal
+    vTaskDelay(pdMS_TO_TICKS(10));
+    ch32_sdi_write(CH32_REG_DEBUG_DMCONTROL, 0x80000001); // Clear the core reset status signal clear request
+    vTaskDelay(pdMS_TO_TICKS(10));
+
 
     timeout = 5;
     while (1) {

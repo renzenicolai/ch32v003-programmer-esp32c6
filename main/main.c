@@ -52,14 +52,21 @@ bool test() {
     printf("CH32 reset and run ok\n");
     vTaskDelay(pdMS_TO_TICKS(1000));
 
-    printf("CH32 reset debug module\n");
+    /*printf("CH32 reset debug module\n");
     ch32res = ch32_reset_debug_module();
     if (!ch32res) {
         printf("CH32 debug module reset failed\n");
         return false;
     }
     printf("CH32 debug module reset ok\n");
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(1000));*/
+
+
+    ch32_sdi_write(CH32_REG_DEBUG_COMMAND, 0x00271008);
+
+    uint32_t value;
+    ch32_sdi_read(CH32_REG_DEBUG_COMMAND, &value);
+    printf("Value: %" PRIx32"\n", value);
 
     return true;
 }
