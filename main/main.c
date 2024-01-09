@@ -5,6 +5,11 @@
 #include "freertos/task.h"
 #include "ch32.h"
 
+extern const uint8_t ch32_500_start[] asm("_binary_500_bin_start");
+extern const uint8_t ch32_500_end[] asm("_binary_500_bin_end");
+
+extern const uint8_t ch32_100_start[] asm("_binary_100_bin_start");
+extern const uint8_t ch32_100_end[] asm("_binary_100_bin_end");
 
 bool test() {
     bool ch32res;
@@ -62,17 +67,25 @@ bool test() {
     vTaskDelay(pdMS_TO_TICKS(1000));*/
 
 
-    ch32_sdi_write(CH32_REG_DEBUG_COMMAND, 0x00271008);
-
-    uint32_t value;
-    ch32_sdi_read(CH32_REG_DEBUG_COMMAND, &value);
-    printf("Value: %" PRIx32"\n", value);
+    while (1) {
+        ch32_halt_microprocessor();
+        ch32_unlock_flash();
+        ch32_write_flash(0x08000000, ch32_500_start, ch32_500_end - ch32_500_start);
+        ch32_reset_microprocessor_and_run();
+        vTaskDelay(pdMS_TO_TICKS(5000));
+        
+        ch32_halt_microprocessor();
+        ch32_unlock_flash();
+        ch32_write_flash(0x08000000, ch32_100_start, ch32_100_end - ch32_100_start);
+        ch32_reset_microprocessor_and_run();
+        vTaskDelay(pdMS_TO_TICKS(5000));
+    }
 
     return true;
 }
 
 void app_main(void) {
-    ch32_init(15);
+    ch32_init(23);
     test();
 
     //ch32_programmer();
