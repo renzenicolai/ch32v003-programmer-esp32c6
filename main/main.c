@@ -66,6 +66,18 @@ bool test() {
     printf("CH32 debug module reset ok\n");
     vTaskDelay(pdMS_TO_TICKS(1000));*/
 
+    ch32_halt_microprocessor();
+    ch32_unlock_flash();
+    ch32_set_nrst_mode(true);
+    // uint32_t rdata[16];
+    // uint32_t addr = 0x1FFFF800;
+    // for (size_t i = 0; i < 16; i++) {
+    //     ch32_read_memory_word(addr+i*4, &rdata[i]);
+    // }
+    // printf("Read:\n");
+    // for (size_t i = 0; i < 16; i++) {
+    //     printf("%zx: %08"PRIx32"\n", i, rdata[i]);
+    // }
 
     while (1) {
         ch32_halt_microprocessor();

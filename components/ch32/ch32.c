@@ -401,3 +401,30 @@ bool ch32_write_flash_block(uint32_t addr, const void *data) {
     
     return true;
 }
+
+// If unlocked: Set the NRST mode on startup.
+// If true: use as reset pit, false: use as GPIO pin.
+bool ch32_set_nrst_mode(bool use_as_reset) {
+    // User configuration address.
+    const uint32_t addr = 0x1ffff800;
+    
+    // Read current value.
+    uint32_t rdata[16];
+    for (size_t i = 0; i < 16; i++) {
+        ch32_read_memory_word(addr+i*4, &rdata[i]);
+    }
+    
+    // Update the NRST mode.
+    if (use_as_reset) {
+        rdata[0] &= ~(0b11 << 27);
+        rdata[0] |=  (0b01 << 27);
+    } else {
+        rdata[0] |=  (0b11 << 27);
+    }
+    
+    // Write new value.
+    ch32_erase_flash_block(addr);
+    ch32_write_flash_block(addr, rdata);
+    
+    return true;
+}

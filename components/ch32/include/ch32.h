@@ -118,7 +118,9 @@ bool ch32_erase_flash_block(uint32_t addr);
 bool ch32_write_flash(uint32_t addr, const void *data, size_t data_len);
 // If unlocked: Write a 64-byte block of FLASH.
 bool ch32_write_flash_block(uint32_t addr, const void *data);
-void ch32_programmer();
+// If unlocked: Set the NRST mode on startup.
+// If true: use as reset pit, false: use as GPIO pin.
+bool ch32_set_nrst_mode(bool use_as_reset);
 
 #ifdef __cplusplus
 }
